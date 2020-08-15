@@ -1,0 +1,121 @@
+import pyttsx3     #pip install pyttxs3
+import datetime
+import speech_recognition as sr  #using pip
+import pyaudio  #if  in case pyaudio is not install, then visit the website unofficial binary of pythn module  
+import wikipedia      #using pip
+import webbrowser
+import os
+
+# r = sr.Recognizer()    ....ignore this 
+# with sr.Microphone() as source:....ignore this 
+#     print("Listening...")....ignore this 
+
+"""the settin of voice is below"""
+
+engine = pyttsx3.init()
+
+voices=engine.getProperty('voices')
+
+engine.setProperty('voice',voices[0].id)
+rate = engine.getProperty('rate')   # getting details of current speaking rate
+engine.setProperty('rate', 125)
+engine.runAndWait()
+
+def Speak(audio):
+    """speakin the progrmm"""
+    
+    engine.say(audio)
+    engine.runAndWait()
+
+def intro():
+    """Intro by assistant as per time"""
+    hour=int(datetime.datetime.now().hour)
+
+    if hour>=0 and hour<12:
+        Speak("Good evening M K !")
+
+    elif hour>=12 and hour<18:
+        Speak("Good evening M K !")
+
+    else:
+        Speak("Good Evening M K!")
+
+    Speak("I am Sofia, your assistant  , how may i help you ?")
+
+def take_command():
+    """this function takes the command from user """
+    
+    r=sr.Recognizer()
+    with sr.Microphone() as source:
+
+        print("listening....")
+        r.pause_threshold=1   #it is the pause after eecuting the one command
+
+        audio=r.listen(source)
+
+    try:
+        print("Recognizing...")
+        instructions= r.recognize_google(audio,language='en-in')
+        print("Krushna said :",instructions)
+        
+    except Exception as error:
+        # print(error)
+
+        print(".~.~.~.~.~.~.~")
+        return "Nothing"
+    return instructions
+
+if __name__=="__main__":
+    intro()
+    while(True):
+    # if 1:
+
+        instructions=take_command().lower()
+
+
+
+
+        if 'schedule for tomorrow' in instructions:
+            Speak("There will be 3 boring lectures for tomorrow, first one is computer graphics ,second is descrete mathematics and last one is digital electronics")
+
+        if 'about dinner' in instructions:
+            Speak("now the milk is ready and you have to finish it ,then you are going to finish the dinnet at 8 pm")
+
+        if 'wikipedia' in instructions:
+            Speak('Searching,please wait')
+            instructions=instructions.replace("wikipedia","")
+            result=wikipedia.summary(instructions,sentences=1)
+            Speak('Answer is ')
+            print(result)
+            Speak(result)
+
+        elif 'open youtube' in instructions:
+            webbrowser.open("youtube.com")
+
+        elif 'open google' in instructions:
+            webbrowser.open("Google.com")
+
+         # elif 'open stackoverflow' in question:
+         #    webbrowser.open("stackoverflow.com")
+
+        elif 'play music' in instructions:
+            mus_dir='E:\\photo'
+            songs=os.listdir(mus_dir)
+            print(songs)
+            os.startfile(os.path.join(mus_dir,songs[0]))
+
+        elif'open typing pro' in instructions:
+            code_target="C:\\Program Files (x86)\\Luke Typing Pro\\LukeTypingPro.exe"
+            os.startfile(code_target)
+            
+        elif 'the time' in instructions:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            Speak(f"Sir, the time is {strTime}")
+
+
+        elif 'open chrome' in instructions:
+            code_target2 = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+            os.startfile(code_target2)
+
+        elif 'thank you' in instructions:
+            Speak("its my pleasure sir ,Have a nice day")
